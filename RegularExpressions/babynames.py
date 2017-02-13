@@ -52,14 +52,14 @@ def extract_names(filename):
 
   	match_name = re.findall(r'<td>(\d+)</td><td>([a-zA-Z]+)</td><td>([a-zA-Z]+)</td>', file_str)
   	for rank in match_name:
-  		names[rank[1]] = rank[0]
-  		names[rank[2]] = rank[0]
+  	  names[rank[1]] = rank[0]
+  	  names[rank[2]] = rank[0]
 
   	sorted_names = sorted(names.items(), key=operator.itemgetter(0))
   	
   	r_list = [ano]
   	for i in range(len(sorted_names)):
-  		r_list.append(sorted_names[i][0]+' '+sorted_names[i][1])
+  	  r_list.append(sorted_names[i][0]+' '+sorted_names[i][1])
   	return r_list
 
 
@@ -83,9 +83,19 @@ def main():
   # +++your code here+++
   # For each filename, get the names, then either print the text output
   # or write it to a summary file
-  names = extract_names(args[0])
-  for i in range(10):
-  	print(names[i])
+
+  if summary: 
+  	for f in args:
+  	  f_file = open(f+'.summary', 'w')
+  	  for value in extract_names(f):
+  	  	f_file.write(value+'\n')
+
+  else:
+	for f in args:
+	  names = extract_names(f)
+	  for i in range(10):
+		print(names[i])
+	  print('\n')
   
 if __name__ == '__main__':
   main()
