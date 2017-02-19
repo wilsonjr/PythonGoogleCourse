@@ -24,6 +24,12 @@ def print_duplicates(dict_elem):
 	if dict_elem[1] > 1:
 		print dict_elem[0]
 
+def sort_function(elem):
+	match = re.search(r'puzzle/\S+-(\w+)\.jpg', elem[0])
+	if match:
+		return match.group(1)
+
+
 def read_urls(filename):
   """Returns a list of the puzzle urls from the given log file,
   extracting the hostname from the filename itself.
@@ -35,19 +41,31 @@ def read_urls(filename):
   ufile = urllib.urlopen(filename)
   lines = ufile.readlines()
 
+  re_animal = r'GET\s\S+(puzzle/\w-\w+\.jpg)\sHTTP'
+  re_place = r'GET\s\S+(puzzle/\w-\w+-\w+\.jpg)\sHTTP'
+
   for line in lines:
-  	match = re.search(r'GET\s\S+(puzzle\S+)\sHTTP', line)
+  	match = re.search(re_animal, line)
   	if match:
   		complete_url = server_name+match.group(1)
   		if complete_url not in url_dict:
   			url_dict[complete_url] = 0
   		url_dict[complete_url] += 1
+  	else:
+  		match = re.search(re_place, line)
+  		if match:
+  			complete_url = server_name+match.group(1)
+  			if complete_url not in url_dict:
+  				url_dict[complete_url] = 0
+  			url_dict[complete_url] += 1
+
 
   #map(print_duplicates, url_dict.items())
 
-  elems = sorted(url_dict.items(), key=lambda x:x[0])
+  elems = sorted(url_dict.items(), key=lambda x:sort_function(x))
   sorted_keys = []
   for elem in elems:
+  	sort_function(elem)
   	sorted_keys.append(elem[0])
   return sorted_keys
  
