@@ -30,6 +30,18 @@ def copy_to(paths, dir):
 
 	map(lambda x: shutil.copy(x, dir+'\\'+os.path.basename(x)), paths)
 
+def zip_to(paths, zippath):
+	command = 'zip -j '+zippath+' '+' '.join(paths)
+	print command
+
+	(status, output) = commands.getstatusoutput(command)
+	if status:
+		sys.stderr.write(output)
+		sys.exit(1)
+	print output
+
+
+
 def main():
   # This basic command line argument parsing code is provided.
   # Add code to call your functions below.
@@ -66,6 +78,9 @@ def main():
   elif todir != '':
   	paths = get_special_paths(args[0])
   	copy_to(paths, todir)
+  elif tozip != '':
+  	paths = get_special_paths(args[0])
+  	zip_to(paths, tozip)
 
 
 
