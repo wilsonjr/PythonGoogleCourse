@@ -11,6 +11,7 @@ import re
 import sys
 import urllib
 import operator
+import ssl
 
 """Logpuzzle exercise
 Given an apache logfile, find the puzzle urls and download the images.
@@ -30,22 +31,25 @@ def read_urls(filename):
   increasing order."""
 
   url_dict = {}
-  
+  server_name = 'https://developers.google.com/edu/python/images/'
   ufile = urllib.urlopen(filename)
   lines = ufile.readlines()
 
   for line in lines:
-  	match = re.search(r'GET\s(\S+puzzle\S+)\sHTTP', line)
+  	match = re.search(r'GET\s\S+(puzzle\S+)\sHTTP', line)
   	if match:
-  		complete_url = filename+match.group(1)
+  		complete_url = server_name+match.group(1)
   		if complete_url not in url_dict:
   			url_dict[complete_url] = 0
   		url_dict[complete_url] += 1
 
-  map(print_duplicates, url_dict.items())
+  #map(print_duplicates, url_dict.items())
 
-  elems = sorted(url_dict.keys(), key=operator.itemgetter(0))
-  return elems
+  elems = sorted(url_dict.items(), key=lambda x:x[0])
+  sorted_keys = []
+  for elem in elems:
+  	sorted_keys.append(elem[0])
+  return sorted_keys
  
 
 def download_images(img_urls, dest_dir):
@@ -62,17 +66,20 @@ def download_images(img_urls, dest_dir):
   print 'Retrieving...'
   basename = 'img'
 
-  for i in range(len(img_urls)):
-    name = basename+str(i)
-    #urllib.urlretrieve(img_urls[i], dest_dir+'\\'+name)
+  try:
+	  for i in range(len(img_urls)):
+	    name = basename+str(i)
+	    urllib.urlretrieve(img_urls[i], dest_dir+'\\'+name+'.jpg', context=ssl._create_unverified_context())
 
-  htmlfile = open(dest_dir+'\\index.html', 'w')
-  if htmlfile:
-  	htmlfile.write('<verbatim>\n<html>\n<body>\n')
-  	for i in range(len(img_urls)):
-  	  name = basename+str(i)
-  	  htmlfile.write('<img src="'+dest_dir+'\\'+name+'">')
-  	htmlfile.write('\n</body>\n</html>')
+	  htmlfile = open(dest_dir+'\\index.html', 'w')
+	  if htmlfile:
+	  	htmlfile.write('<verbatim>\n<html>\n<body>\n')
+	  	for i in range(len(img_urls)):
+	  	  name = basename+str(i)
+	  	  htmlfile.write('<img src="'+name+'.jpg">')
+	  	htmlfile.write('\n</body>\n</html>')
+  except IOError:
+      print 'Cannot download files...'	
   
 
 def main():
