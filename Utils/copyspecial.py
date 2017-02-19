@@ -19,7 +19,8 @@ def get_special_paths(dir):
 	l = []
 	filenames = os.listdir(dir)
 	for filename in filenames:
-		l.append(os.path.abspath(os.path.join(dir, filename)))
+		if re.search(r'__\w+__', filename):
+			l.append(os.path.abspath(os.path.join(dir, filename)))
 
 	return l
 
