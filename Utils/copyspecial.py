@@ -23,9 +23,11 @@ def get_special_paths(dir):
 
 	return l
 
+def copy_to(paths, dir):
+	if not os.path.exists(dir):
+		os.mkdir(dir)
 
-
-
+	map(lambda x: shutil.copy(x, dir+'\\'+os.path.basename(x)), paths)
 
 def main():
   # This basic command line argument parsing code is provided.
@@ -60,7 +62,9 @@ def main():
   	paths = get_special_paths(args[0])
   	for path in paths:
   		print path
-
+  elif todir != '':
+  	paths = get_special_paths(args[0])
+  	copy_to(paths, todir)
 
 
 
