@@ -46,10 +46,7 @@ def read_urls(filename):
 
   elems = sorted(url_dict.keys(), key=operator.itemgetter(0))
   return elems
-
-
-
-  
+ 
 
 def download_images(img_urls, dest_dir):
   """Given the urls already in the correct order, downloads
@@ -59,7 +56,23 @@ def download_images(img_urls, dest_dir):
   with an img tag to show each local image file.
   Creates the directory if necessary.
   """
-  # +++your code here+++
+  if not os.path.exists(dest_dir):
+  	os.mkdir(dest_dir)
+
+  print 'Retrieving...'
+  basename = 'img'
+
+  for i in range(len(img_urls)):
+    name = basename+str(i)
+    #urllib.urlretrieve(img_urls[i], dest_dir+'\\'+name)
+
+  htmlfile = open(dest_dir+'\\index.html', 'w')
+  if htmlfile:
+  	htmlfile.write('<verbatim>\n<html>\n<body>\n')
+  	for i in range(len(img_urls)):
+  	  name = basename+str(i)
+  	  htmlfile.write('<img src="'+dest_dir+'\\'+name+'">')
+  	htmlfile.write('\n</body>\n</html>')
   
 
 def main():
@@ -76,10 +89,10 @@ def main():
 
   img_urls = read_urls(args[0])
 
-"""  if todir:
+  if todir:
     download_images(img_urls, todir)
   else:
     print '\n'.join(img_urls)
-"""
+
 if __name__ == '__main__':
   main()
